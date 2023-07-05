@@ -8,5 +8,9 @@
 # -- repository: YOUR REPOSITORY URL                                                                     -- #
 # -- --------------------------------------------------------------------------------------------------- -- #
 """
+import json
 
-dict_test = {'key_a': 'a', 'key_b': 'b'}
+# Opening JSON file
+# Abre el archivo JSON en modo lectura
+with open('files\\uniswapv3_all_swaps.json', 'r') as archivo:
+    json_data = json.load(archivo)
