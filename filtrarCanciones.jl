@@ -22,7 +22,6 @@ function filterDanceability(df, respuestaUser)
     return df
 end
 
-
 function filterEnergy(df, respuestaUser)
     ENERGIA_ALTA = 0.8
     ENERGIA_BAJA = 0.7
@@ -70,44 +69,55 @@ function filterLoudness(df, respuestaUser)
     return df_response
 end
 
-function pedirValorFiltrar(filtro)
-    continuar = true
-    
-    while (continuar)
-        println("Por favor, ingrese un valor para filtrar la columna: $filtro, los valores validos son: (ALTA, BAJA, MEDIA): ")
-        respuesta_usuario = readline()
-        respuesta_usuario = uppercase(strip(respuesta_usuario))
+function main()
+    df_topMundial = new_df[1:50, :]
 
-        if(respuesta_usuario == "ALTA" || 
-            respuesta_usuario == "MEDIA" ||
-            respuesta_usuario == "BAJA")
-            continuar = false
-        end
-    end
-    
-    return respuesta_usuario
+    df_filter = filterEnergy(df_topMundial, "MEDIA")
+    df_filter = filterDanceability(df_filter, "MEDIA")
+    df_filter = filterLoudness(df_filter, "BAJA")
+
+    return df_filter[:, [:name, :danceability, :energy, :loudness]]   
 end
+main()
 
 function main2()
     df_topMundial = new_df[1:50, :]
 
-    valorEnergy = pedirValorFiltrar("energy")
-    df_dance = filterEnergy(df_topMundial, valorEnergy)
+    df_filter = filterEnergy(df_topMundial, "BAJA")
+    df_filter = filterDanceability(df_filter, "MEDIA")
+    df_filter = filterLoudness(df_filter, "BAJA")
 
-    
-    valorDanceability = pedirValorFiltrar("danceability")
-    df_dance = filterDanceability(df_dance, valorDanceability)
+    return df_filter[:, [:name, :danceability, :energy, :loudness]]   
+end
+main2()
 
-    valorLoudness = pedirValorFiltrar("loudness")
-    df_dance = filterLoudness(df_dance, valorLoudness)
-    
-    return df_dance[:, [:name, :danceability, :energy, :loudness]]
-    
+function main3()
+    df_topMundial = new_df[1:50, :]
+
+    df_filter = filterEnergy(df_topMundial, "ALTA")
+    df_filter = filterDanceability(df_filter, "ALTA")
+    df_filter = filterLoudness(df_filter, "BAJA")
+
+    return df_filter[:, [:name, :danceability, :energy, :loudness]]   
+end
+main3()
+
+function proceso1()
+    println("Inicio de proceso 1")
+    sleep(5)  # Simulacion de tiempo
+    println("Fin de proceso 1")
 end
 
-function main()
-    respuesta_usuario = pedirValorFiltrar("danceability")
-    println("Respuesta ingresada: $respuesta_usuario")
+function proceso2()
+    println("Inicio de proceso 2")
+    sleep(2)  # Simulacion de tiempo
+    println("Fin de proceso 2")
 end
 
-main()
+# Crear threads para ejecutar los procesos en paralelo
+t1 = Threads.@spawn proceso1()
+t2 = Threads.@spawn proceso2()
+
+# Esperar a que ambos threads terminen
+Threads.wait(t1)
+Threads.wait(t2)
